@@ -17,7 +17,9 @@ id
 ## get_proxy_clim() will return the proxy and climate data needed for the model
 ## It will be based on the catchment and climate index choice
 ## It will also return some meta data related to Dataset IDs, recon years etc
-
+## This is currently set up to use all proxies associated with the catchment-climate combo.
+## You can select from these proxies if you wish
+## For example, to only use the first proxy use id$proxy_id[1] and id$lag_match[1] in get_proxy_clim()
 dat <- get_proxy_clim_data(catchment = id$catchment,
                            climate_index = id$climate_index,
                            proxy_id = id$proxy_id,
