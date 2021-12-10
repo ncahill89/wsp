@@ -1,3 +1,5 @@
+Download the repo and click open the .Rproj to open the project in Rstudio. 
+
 Run the model using main_final.R
 
 Results will be saved to output folders
