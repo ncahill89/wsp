@@ -1,10 +1,18 @@
+#' Get catchment, climate and proxy IDs.
+#'
+#' @param catchment_num
+#' @param climate_num
+#'
+#' @return A list of IDs
+#' @export
+
 get_id <- function(catchment_num = 1,
                          climate_num = 1)
 {
 
+  ### data files
   catchment_climate_list <- readRDS("data/catchment_climate_list.rds")
   lag_match_list <- readRDS("data/lag_match_list.rds")
-
   catchments <- readRDS("data/catchments.rds")
   climate_indices <- readRDS("data/climate_indices.rds")
 
@@ -15,39 +23,82 @@ get_id <- function(catchment_num = 1,
   return(list(proxy_id = proxy_id,
               lag_match = lag_match,
               catchment = catchments[catchment_num],
-              climate_index = climate_indices[climate_num]))
+              climate_index = climate_indices[climate_num],
+              catchment_num = catchment_num,
+              climate_num = climate_num))
 }
+
+
+#' Pre-processing the data
+#'
+#' @param catchment
+#' @param climate_index
+#' @param proxy_id
+#' @param lag_match
+#' @param filter_for_overlap
+#' @param valid
+#'
+#' @return A list of data for input to `get_jags_data()`
+#' @export
 
 get_proxy_clim_data <- function(catchment,
                                 climate_index,
                                 proxy_id,
-                                lag_match)
+                                lag_match,
+                                catchment_num,
+                                climate_num,
+                                filter_for_overlap = FALSE,
+                                valid = FALSE,
+                                divergence_cutoff = 3.5)
 {
-
+  #KL_lookup_table <- read_csv("data/KL_divergence_lookup.csv")
   proxy_data <- read_csv("data/proxy_dataset.csv")
   proxy_data$DatasetID <- paste0("Dataset_",proxy_data$DatasetID)
-  climate_dataset <- read_csv("data/combined_catchment_data.csv")
 
-  ## Filter proxy data & get average value if a year has multiple values
+  ### get training data if validation run
+  if(valid == FALSE)
+  {
+    climate_dataset <- read_csv("data/combined_catchment_data.csv")
+    }
+  else
+  {
+    climate_dataset <- read_csv("data/training_catchment_data.csv")
+    proxy_data <- proxy_data %>% filter(Year > 1800)
+  }
+
+
+
+  ### filter proxy data & get average value if a year has multiple values
   proxy_use <- proxy_data %>%
     filter(DatasetID %in% proxy_id) %>%
     mutate(Year = floor(Year)) %>%
     group_by(DatasetID, Year) %>%
-    summarise(proxy_value = mean(proxy_value)) %>%
+    dplyr::summarise(proxy_value = mean(proxy_value)) %>%
     drop_na() %>%
     ungroup()
 
-  ## Get the relevant climate indicator data
+  ### get the relevant climate indicator data
   indicator_data <- climate_dataset %>%
     select(index, year, catchment) %>%
     filter(index == climate_index) %>%
-    rename(value = catchment,
+    dplyr::rename(value = catchment,
            Year = year)
 
-  ## Get some info related to recon years etc..
+  if(climate_index == "rain__1yr_wy7")
+  {
+    t_ind <- BCres(indicator_data$value)
+    indicator_data$value_transformed <- t_ind$transformed
+  }
+  else
+  {
+    t_ind <- NULL
+    indicator_data$value_transformed <- indicator_data$value
+  }
+
+  ### Get some info related to recon years etc..
   meta_data <- proxy_use %>%
     group_by(DatasetID) %>%
-    summarise(n_years = length(unique(Year)),
+    dplyr::summarise(n_years = length(unique(Year)),
               min_proxy_yr = floor(min(Year)),
               max_proxy_yr = floor(max(Year))) %>%
     ungroup() %>%
@@ -64,7 +115,7 @@ get_proxy_clim_data <- function(catchment,
   if(nrow(meta_data != 0))
   {
     indvar_data <- tibble(Year = meta_data$min_proxy_yr[1]:meta_data$max_proxy_yr[1],
-                          clim_value = c(rep(NA, meta_data$n_recon_years[1]),indicator_data$value[1:meta_data$proxy_max_index[1]]))
+                          clim_value = c(rep(NA, meta_data$n_recon_years[1]),indicator_data$value_transformed[1:meta_data$proxy_max_index[1]]))
 
     tot_year <- meta_data$min_proxy_yr[1]:meta_data$max_proxy_yr[1]
     proxy_year <- proxy_use %>% filter(DatasetID == unique(meta_data$DatasetID)[1]) %>% pull(Year)
@@ -83,7 +134,7 @@ get_proxy_clim_data <- function(catchment,
       for(i in 2:nrow(meta_data))
       {
         indvar_data_temp <- tibble(Year = meta_data$min_proxy_yr[i]:meta_data$max_proxy_yr[i],
-                                   clim_value = c(rep(NA, meta_data$n_recon_years[i]),indicator_data$value[1:meta_data$proxy_max_index[i]]))
+                                   clim_value = c(rep(NA, meta_data$n_recon_years[i]),indicator_data$value_transformed[1:meta_data$proxy_max_index[i]]))
 
         indvar_data <- rbind(indvar_data, indvar_data_temp)
 
@@ -101,17 +152,55 @@ get_proxy_clim_data <- function(catchment,
 
 
     proxy_clim_data <- proxy_use_final  %>%
-      mutate(clim_value = indvar_data$clim_value)
-}
+      mutate(clim_value = indvar_data$clim_value) %>%
+      mutate(period = ifelse(is.na(clim_value), "recon","calib"))
+
+    ### filter the data based on KL divergence of recon proxy data and calib proxy data
+    if(filter_for_overlap)
+    {
+      KL_Values <- readRDS("data/KL_Values.rds")
+      proxy_variables <- proxy_id
+      #print(proxy_variables)
+      for (i in 1:length(proxy_variables)) {
+        Dataset <- proxy_clim_data[proxy_clim_data$DatasetID == proxy_variables[i],]
+        calib <- Dataset[Dataset$period == "calib",]
+
+        catchmentID = catchment
+        KL_div <- as.numeric(KL_Values[[catchment_num]][[climate_num]])[i]
+
+        if (KL_div > divergence_cutoff | is.na(KL_div) | sum(!is.na(unique(calib$clim_value))) < 2) {
+          meta_data <- meta_data[meta_data$DatasetID != proxy_variables[i],]
+          proxy_clim_data <- proxy_clim_data[proxy_clim_data$DatasetID != proxy_variables[i],]
+        }
+      }
+    }
+
+
+  }
+
     return(list(proxy_clim_data = proxy_clim_data,
                 indicator_data = indicator_data,
-                meta_data = meta_data))
+                meta_data = meta_data,
+                climate_index = climate_index,
+                t_ind = t_ind
+                ))
 }
 
+
+#' Format the data for model input
+#'
+#' @param proxy_clim_data
+#' @param indicator_data
+#' @param meta_data
+#' @param include_lag
+#'
+#' @return A list of data for input to `jags()`
+#' @export
 
 get_jags_data <- function(proxy_clim_data,
                           indicator_data,
                           meta_data,
+                          climate_index,
                           include_lag = FALSE)
 {
 
@@ -121,7 +210,7 @@ if(include_lag)
 {
 lag_match_all <- rep(meta_data$lag_match, proxy_clim_data %>%
                                           group_by(DatasetID) %>%
-                                          summarise(n = n()) %>%
+                                          dplyr::summarise(n = n()) %>%
                                           pull(n))
 }
 if(!include_lag)
@@ -145,20 +234,21 @@ data_scale_filter <- data_scale %>%
   filter(!is.na(year_ind))
 
 ## get climate data for the calibration period
+
 data_calib <- indicator_data %>%
   mutate(clim_scale = (value - mean(value))/sd(value)) %>%
   filter(Year <= max(meta_data$max_proxy_yr))
+
 
 ## get no. of reconstruction years
 n_recon <-  data_scale %>%
   filter(is.na(clim_scale)) %>%
   group_by(DatasetID) %>%
-  summarise(n = n()) %>%
+  dplyr::summarise(n = n()) %>%
   pull(n) %>% max
 
 ## bget number of proxies used
 n_proxys <- nrow(meta_data)
-
 
 # create jags data list
 jags_data =  list(y_i = data_scale_filter$proxy_scale,
