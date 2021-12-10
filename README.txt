@@ -2,7 +2,7 @@ Run the model using main_final.R
 
 Results will be saved to output folders
 
-Each catchment has a folder containing subfolders with the reconstructions results for each of the climate indices that passed convergence checks. In each sub folder you see a plot of the results and a .csv file. The .csv file contains
+Each catchment will have a folder containing subfolders with the reconstruction results for each of the climate indices. In each sub folder you will see a plot of the results and a .csv file. The .csv file contains
  
 1. Year
 2. climate_variable_recon – this is the estimate for the reconstruction
