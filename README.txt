@@ -1,6 +1,6 @@
-Download the repo and click open the .Rproj to open the project in Rstudio. 
+Download the repo and then click wsp.Rproj to open the project in Rstudio. 
 
-Run the model using main_final.R
+Open main_final.txt. This contains the wrapper code to run the model.
 
 Results will be saved to output folders
 
