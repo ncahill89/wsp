@@ -1,6 +1,6 @@
  Download the repo and then click wsp.Rproj to open the project in Rstudio. 
 
-  - To produce catchment-scale reconstructions open main_catchment.R. This contains the wrapper code to run the model.
+  - To produce catchment-scale reconstructions open __main_catchment.R__. This contains the wrapper code to run the model.
 
   - To produce reconstructions for IOD, IPO, SOI, NINO open main_queensland.R. This contains the wrapper code to run the model.
 
