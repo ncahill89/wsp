@@ -19,6 +19,8 @@ for(i in 1:ncol(mod$recon_samps))
   percentile_max[i] <- 100-round(perc(summaries$max[1])*100)
   percentile_mean[i] <- round(perc(summaries$mean[1])*100)
 }
+
+
 recon_years <- mod$res %>% filter(period == "recon") %>% pull(year)
 perc_dat <- tibble(recon_years, percentile_min, percentile_max,percentile_mean)
 

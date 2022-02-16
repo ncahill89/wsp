@@ -1,17 +1,16 @@
 
 format_list <- function()
 {
-proxy_dataset <- read_csv("data/proxy_dataset.csv")
+proxy_dataset <- read_csv("proxy_dataset.csv")
 proxy_dataset$DatasetID <- paste0("Dataset_",proxy_dataset$DatasetID)
-combined_catchment_data <- read_csv("data/combined_catchment_data.csv")
-selection_long <- read_csv("data/selection_long.csv") %>% drop_na()
-selection_long_filtered <- read_csv("data/selection_long_filtered_lags.csv") %>% drop_na()
+combined_catchment_data <- read_csv("combined_catchment_data.csv")
+selection_long <- read_csv("selection_long.csv") %>% drop_na()
 
 catchments <- selection_long$catchment %>% unique()
-climate_indices <- selection_long_filtered$climate_index %>% unique()
+climate_indices <- selection_long$climate_index %>% unique()
 
-saveRDS(catchments, "data/catchments.rds")
-saveRDS(climate_indices, "data/climate_indices.rds")
+saveRDS(catchments, "catchments.rds")
+saveRDS(climate_indices, "climate_indices.rds")
 
 N <- length(catchments)
 M <- length(climate_indices)
@@ -44,8 +43,8 @@ for(i in 1:N)
 
 }
 
-saveRDS(catchment_climate_list_out, "data/catchment_climate_list.rds")
-saveRDS(lag_match_list_out, "data/lag_match_list.rds")
+saveRDS(catchment_climate_list_out, "catchment_climate_list.rds")
+saveRDS(lag_match_list_out, "lag_match_list.rds")
 
 }
 

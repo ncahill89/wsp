@@ -11,6 +11,7 @@ run_mod <- function(id)
                                lag_match = id$lag_match,
                                catchment_num = id$catchment_num,
                                climate_num = id$climate_num,
+                               catchment_scale = id$catchment_scale,
                                filter_for_overlap = TRUE,
                                divergence_cutoff = 3.5)
 
@@ -166,14 +167,18 @@ run_jags_model <- function(dat,
   low_scale<-c(apply(mcmc.jags$xrecon_j,2,quantile,0.025))
   high_scale<-c(apply(mcmc.jags$xrecon_j,2,quantile,0.975))
 
+
   if(is.null(dat$t_ind))
   {
     scale_mean <- mean(model_data$data_calib$value)
     scale_sd <- sd(model_data$data_calib$value)
+    recon_samps <- (mcmc.jags$xrecon_j*scale_sd) + scale_mean
 
-    med <- c(((med_scale*scale_sd) + scale_mean),model_data$data_calib$value)
-    low <- c(((low_scale*scale_sd) + scale_mean),model_data$data_calib$value)
-    high <- c(((high_scale*scale_sd) + scale_mean),model_data$data_calib$value)
+    med <- c(c(apply(recon_samps,2,median)),model_data$data_calib$value)
+    low <- c(c(apply(recon_samps,2,quantile, 0.025)),model_data$data_calib$value)
+    high <- c(c(apply(recon_samps,2,quantile, 0.975)),model_data$data_calib$value)
+
+
 
   }
 
@@ -181,14 +186,14 @@ run_jags_model <- function(dat,
   {
     scale_mean <- mean(model_data$data_calib$value_transformed)
     scale_sd <- sd(model_data$data_calib$value_transformed)
+    recon_samps <- (mcmc.jags$xrecon_j*scale_sd) + scale_mean
 
-    med <- (med_scale*scale_sd) + scale_mean
-    low <- (low_scale*scale_sd) + scale_mean
-    high <- (high_scale*scale_sd) + scale_mean
+    med <- c(apply(recon_samps,2,median))
+    low <- c(apply(recon_samps,2,quantile, 0.025))
+    high <- c(apply(recon_samps,2,quantile, 0.975))
 
   }
 
-    recon_samps <- (mcmc.jags$xrecon_j*scale_sd) + scale_mean
 
 
   if(!is.null(dat$t_ind))
@@ -198,6 +203,7 @@ run_jags_model <- function(dat,
     med <- c((med*t_ind$lambda +1)^(1/t_ind$lambda),model_data$data_calib$value)
     low <- c((low*t_ind$lambda +1)^(1/t_ind$lambda),model_data$data_calib$value)
     high <- c((high*t_ind$lambda +1)^(1/t_ind$lambda),model_data$data_calib$value)
+    recon_samps <- (recon_samps*t_ind$lambda +1)^(1/t_ind$lambda)
 
   }
   ## save the results

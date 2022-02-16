@@ -7,17 +7,34 @@
 #' @export
 
 get_id <- function(catchment_num = 1,
-                         climate_num = 1)
+                   climate_num = 1,
+                   choose_proxy = NULL,
+                   catchment_scale = TRUE)
 {
 
   ### data files
-  catchment_climate_list <- readRDS("data/catchment_climate_list.rds")
-  lag_match_list <- readRDS("data/lag_match_list.rds")
-  catchments <- readRDS("data/catchments.rds")
-  climate_indices <- readRDS("data/climate_indices.rds")
+  if(catchment_scale == TRUE)
+  {
+  catchment_climate_list <- readRDS("data_all/catchment_climate_list.rds")
+  lag_match_list <- readRDS("data_all/lag_match_list.rds")
+  catchments <- readRDS("data_all/catchments.rds")
+  climate_indices <- readRDS("data_all/climate_indices.rds")
+  }
 
+  if(catchment_scale == FALSE)
+  {
+    catchment_climate_list <- readRDS("data/catchment_climate_list.rds")
+    lag_match_list <- readRDS("data/lag_match_list.rds")
+    catchments <- readRDS("data/catchments.rds")
+    climate_indices <- readRDS("data/climate_indices.rds")
+  }
   ## Get the list of proxies corresponding to the catchment, climate combo.
-  proxy_id <- catchment_climate_list[[catchment_num]][[climate_num]]
+  if(is.null(choose_proxy))
+  {
+  proxy_id <- catchment_climate_list[[catchment_num]][[climate_num]]}
+
+  if(!is.null(choose_proxy)){
+  proxy_id <- choose_proxy}
   lag_match <- lag_match_list[[catchment_num]][[climate_num]]
 
   return(list(proxy_id = proxy_id,
@@ -25,7 +42,8 @@ get_id <- function(catchment_num = 1,
               catchment = catchments[catchment_num],
               climate_index = climate_indices[climate_num],
               catchment_num = catchment_num,
-              climate_num = climate_num))
+              climate_num = climate_num,
+              catchment_scale = catchment_scale))
 }
 
 
@@ -47,18 +65,26 @@ get_proxy_clim_data <- function(catchment,
                                 lag_match,
                                 catchment_num,
                                 climate_num,
+                                catchment_scale,
                                 filter_for_overlap = FALSE,
                                 valid = FALSE,
-                                divergence_cutoff = 3.5)
+                                divergence_cutoff = 4)
 {
+
   #KL_lookup_table <- read_csv("data/KL_divergence_lookup.csv")
-  proxy_data <- read_csv("data/proxy_dataset.csv")
+
+  if(catchment_scale == TRUE) proxy_data <- read_csv("data_all/proxy_dataset.csv")
+
+  if(catchment_scale == FALSE) proxy_data <- read_csv("data/proxy_dataset.csv")
+
   proxy_data$DatasetID <- paste0("Dataset_",proxy_data$DatasetID)
 
   ### get training data if validation run
   if(valid == FALSE)
   {
-    climate_dataset <- read_csv("data/combined_catchment_data.csv")
+    if(catchment_scale == TRUE) climate_dataset <- read_csv("data_all/combined_catchment_data.csv")
+    if(catchment_scale == FALSE) climate_dataset <- read_csv("data/combined_catchment_data.csv")
+
     }
   else
   {
@@ -75,7 +101,8 @@ get_proxy_clim_data <- function(catchment,
     group_by(DatasetID, Year) %>%
     dplyr::summarise(proxy_value = mean(proxy_value)) %>%
     drop_na() %>%
-    ungroup()
+    ungroup() %>%
+    filter(Year > 1000)
 
   ### get the relevant climate indicator data
   indicator_data <- climate_dataset %>%
@@ -158,7 +185,9 @@ get_proxy_clim_data <- function(catchment,
     ### filter the data based on KL divergence of recon proxy data and calib proxy data
     if(filter_for_overlap)
     {
-      KL_Values <- readRDS("data/KL_Values.rds")
+      if(catchment_scale == TRUE) KL_Values <- readRDS("data_all/KL_Values.rds")
+      if(catchment_scale == FALSE) KL_Values <- readRDS("data/KL_Values.rds")
+
       proxy_variables <- proxy_id
       #print(proxy_variables)
       for (i in 1:length(proxy_variables)) {
