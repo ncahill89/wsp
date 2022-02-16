@@ -78,7 +78,6 @@ for (catchment in catchment_names) {
   }
   }
 }
-write.csv(KL_divergence, "KL_divergence_lookup_orig.csv")
 saveRDS(output, file = "data/KL_Values.rds")
 
 
