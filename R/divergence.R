@@ -33,6 +33,10 @@ get_divergence <- function(calib, recon, adjust = 1) {
   }
 }
 
+run <- FALSE
+
+if(run)
+{
 for (catchment in catchment_names) {
 
   for (climate_variable in climate_variable_names) {
@@ -77,6 +81,7 @@ for (catchment in catchment_names) {
 
   }
   }
+}
 }
 saveRDS(output, file = "data/KL_Values.rds")
 
