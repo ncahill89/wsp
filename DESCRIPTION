@@ -6,7 +6,7 @@ Authors@R:
            family = "Cahill",
            role = c("aut", "cre"),
            email = "niamh.cahill@mu.ie",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           comment = c(ORCID = "0000-0003-3086-550X"))
 Description: This package will provide reconstructions of hydroclimate variables based on continuous proxy records
 License: What license it uses
 Encoding: UTF-8
