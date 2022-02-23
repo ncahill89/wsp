@@ -9,7 +9,7 @@ This Repo contains a model for producing catchment-scale hydroclimate reconstruc
 
  - If using __main_catchment.R__ then results will be saved to catchment specific output folders.
 
- - Each catchment will have a folder containing subfolders with the reconstruction results for each of the climate indices. In each sub folder you will see a plot of the results and a .csv file. The .csv file contains
+ - Each catchment will have a folder containing subfolders with the reconstruction results for each of the climate indices. In each sub folder you will see a plot of the results and a .csv file. The .csv file contains:
  
   1. Year
   2. climate_variable_recon – this is the estimate for the reconstruction
