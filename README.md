@@ -1,8 +1,8 @@
  Download the repo and then click wsp.Rproj to open the project in Rstudio. 
 
-  - To produce catchment-scale reconstructions open __main_catchment.R__. This contains the wrapper code to run the model. The data for the catchment scale is in the __data_all__ folder. 
+  - To produce catchment-scale reconstructions open __main_catchment.R__. This contains the wrapper code to run the model. This is the code that produces the results in the [preprint paper](https://arxiv.org/abs/2202.09383). If you wish to view the raw data, the data for the catchment scale is in the __data_all__ folder. 
 
-  - To produce reconstructions for IOD, IPO, SOI, NINO open __main_queensland.R__. This contains the wrapper code to run the model. The data for is in the __data__ folder. 
+  - To produce reconstructions for IOD, IPO, SOI, NINO open __main_queensland.R__. This contains the wrapper code to run the model. If you wish to view the raw data you'll find it in the __data__ folder. 
 
 
 If using __main_catchment.R__ then results will be saved to catchment specific output folders.
@@ -17,4 +17,4 @@ Each catchment will have a folder containing subfolders with the reconstruction 
 
 In each catchment folder there will be a file called pass.txt that will contain information about whether or not the model passed convergence checks for the various climate variables.
 
-If using __main_queensland.R__ then output will be saved in a folder called queensland. The format is the same as described above. 
+If using __main_queensland.R__ then all output will be saved in a folder called queensland that will again contain subfolders for the various indices. The format is the same as described above. 
