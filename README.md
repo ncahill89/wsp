@@ -1,6 +1,6 @@
  Download the repo and then click wsp.Rproj to open the project in Rstudio. 
 
-  - To produce catchment-scale reconstructions open __main_catchment.R__. This contains the wrapper code to run the model. This is the code that produces the results in the [preprint paper](https://arxiv.org/abs/2202.09383). If you wish to view the raw data, the data for the catchment scale is in the __data_all__ folder. 
+  - To produce catchment-scale reconstructions open __main_catchment.R__. This contains the wrapper code to run the model. This is the code that produces the results in the [preprint paper](https://arxiv.org/abs/2202.09383). If you wish to view the raw catchment-scale data you'll find it in the __data_all__ folder. 
 
   - To produce reconstructions for IOD, IPO, SOI, NINO open __main_queensland.R__. This contains the wrapper code to run the model. If you wish to view the raw data you'll find it in the __data__ folder. 
 
