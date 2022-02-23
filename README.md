@@ -1,4 +1,6 @@
- Download the repo and then click wsp.Rproj to open the project in Rstudio. 
+This Repo contains a model for producing catchment-scale hydroclimate reconstruction in Queensland, Australia using multiple palaeoclimate proxy records. We are making use of the [PalaeoWISE database](https://figshare.com/articles/dataset/PalaeoWISE/14593863/3) compiled by [Croke et al., in 2021](https://www.nature.com/articles/s41597-021-01074-8#Sec7) which provides a set of standardised proxy records most relevant to hydroclimate reconstruction
+ 
+ To run the model, download the repo and then click wsp.Rproj to open the project in Rstudio. 
 
   - To produce catchment-scale reconstructions open __main_catchment.R__. This contains the wrapper code to run the model. This is the code that produces the results in the [preprint paper](https://arxiv.org/abs/2202.09383). If you wish to view the raw catchment-scale data you'll find it in the __data_all__ folder. 
 
