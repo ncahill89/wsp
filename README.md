@@ -17,6 +17,6 @@ This Repo contains a model for producing catchment-scale hydroclimate reconstruc
   4. upper – this is the upper bound of the 95% uncertainty interval
   5. the remainder of the columns have scaled versions of 2-4. You can ignore these.
 
- - In each catchment folder there will be a file called pass.txt that will contain information about whether or not the model passed initial convergence checks for the various climate variables.
+ - In each catchment folder there will be a file called pass.txt that will contain information about whether or not the model passed initial convergence checks for a each climate index .
 
  - If using __main_queensland.R__ then all output will be saved in a folder called queensland that will again contain subfolders for the various indices. The format is the same as described above. 
