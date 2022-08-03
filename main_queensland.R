@@ -18,7 +18,7 @@ catchments
     id <- get_id(catchment_num = 1,
                 climate_num = c,
                  catchment_scale = FALSE)
-    run_mod(id)
+    run_mod(id, incl.trend = TRUE)
   }# end c loop
 
 

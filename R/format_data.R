@@ -26,14 +26,18 @@ for(i in 1:N)
   {
     data_index <- selection_long %>% filter(catchment == catchments[i]) %>%
       filter(climate_index == climate_indices[j]) %>%
+      group_by(DatasetID) %>%
+      filter(ccf == max(ccf)) %>%
       pull(DatasetID)
 
     lag_match <- selection_long %>% filter(catchment == catchments[i]) %>%
       filter(climate_index == climate_indices[j]) %>%
+      group_by(DatasetID) %>%
+      filter(ccf == max(ccf)) %>%
       pull(lag_match)
 
     climate_index_list[[j]] <- data_index %>% unique()
-    lag_match_list[[j]] <- rep(0, data_index %>% unique() %>% length)
+    lag_match_list[[j]] <-  lag_match
   }
   climate_index_list <- lapply(climate_index_list, function(x) if(identical(x, character(0))) NA_character_ else x)
   lag_match_list <- lapply(lag_match_list, function(x) if(identical(x, character(0))) NA_character_ else x)
