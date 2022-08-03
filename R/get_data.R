@@ -30,6 +30,8 @@ get_id <- function(catchment_num = 1,
     catchments <- readRDS("data/catchments.rds")
     climate_indices <- readRDS("data/climate_indices.rds")
   }
+
+
   ## Get the list of proxies corresponding to the catchment, climate combo.
   if(is.null(choose_proxy))
   {
@@ -38,6 +40,11 @@ get_id <- function(catchment_num = 1,
   if(!is.null(choose_proxy)){
   proxy_id <- choose_proxy}
   lag_match <- lag_match_list[[catchment_num]][[climate_num]]
+
+  dir.create("output", showWarnings = FALSE)
+  dir.create(paste0("output/",catchments[catchment_num]),showWarnings = F)
+
+  cat("Output folder created for the ",id$catchment, "catchment ")
 
   return(list(proxy_id = proxy_id,
               lag_match = lag_match,
