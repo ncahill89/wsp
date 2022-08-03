@@ -1,7 +1,9 @@
 #' Get catchment, climate and proxy IDs.
 #'
-#' @param catchment_num
-#' @param climate_num
+#' @param catchment_num index for the catchment out of the list of all catchment areas
+#' @param climate_num index for climate out of the list of all climate variables
+#' @param choose_proxy specify a single proxy dataset ID or a vector of IDs in the format c("Dataset_XXX","Dataset_YYY")
+#' @param catchment_scale Indicates whether using catchment scale data or not. Defaults to TRUE.
 #'
 #' @return A list of IDs
 #' @export
@@ -53,8 +55,12 @@ get_id <- function(catchment_num = 1,
 #' @param climate_index
 #' @param proxy_id
 #' @param lag_match
+#' @param catchment_num
+#' @param climate_num
+#' @param catchment_scale
 #' @param filter_for_overlap
 #' @param valid
+#' @param divergence_cutoff
 #'
 #' @return A list of data for input to `get_jags_data()`
 #' @export
@@ -68,10 +74,9 @@ get_proxy_clim_data <- function(catchment,
                                 catchment_scale,
                                 filter_for_overlap = FALSE,
                                 valid = FALSE,
-                                divergence_cutoff = 4)
+                                divergence_cutoff = 3.5)
 {
 
-  #KL_lookup_table <- read_csv("data/KL_divergence_lookup.csv")
 
   if(catchment_scale == TRUE) proxy_data <- read_csv("data_all/proxy_dataset.csv")
 
@@ -189,7 +194,6 @@ get_proxy_clim_data <- function(catchment,
       if(catchment_scale == FALSE) KL_Values <- readRDS("data/KL_Values.rds")
 
       proxy_variables <- proxy_id
-      #print(proxy_variables)
       for (i in 1:length(proxy_variables)) {
         Dataset <- proxy_clim_data[proxy_clim_data$DatasetID == proxy_variables[i],]
         calib <- Dataset[Dataset$period == "calib",]
@@ -221,6 +225,7 @@ get_proxy_clim_data <- function(catchment,
 #' @param proxy_clim_data
 #' @param indicator_data
 #' @param meta_data
+#' @param climate_index
 #' @param include_lag
 #'
 #' @return A list of data for input to `jags()`
@@ -254,7 +259,8 @@ data_scale <- proxy_clim_data %>%
   mutate(proxy_scale = (proxy_value - mean(proxy_value,na.rm = TRUE))/sd(proxy_value, na.rm = TRUE)) %>%
   mutate(clim_scale = (clim_value - mean(clim_value,na.rm = TRUE))/sd(clim_value, na.rm = TRUE)) %>%
   ungroup() %>%
-  mutate(year_ind = match((Year+lag_match_all),all_years))
+  mutate(year_ind = match((Year+lag_match_all),all_years)) %>%
+  filter(year_ind > 0)
 
 
 ## filter out the NAs
@@ -263,21 +269,17 @@ data_scale_filter <- data_scale %>%
   filter(!is.na(year_ind))
 
 ## get climate data for the calibration period
-
 data_calib <- indicator_data %>%
-  mutate(clim_scale = (value - mean(value))/sd(value)) %>%
+  mutate(clim_scale = (value_transformed - mean(value_transformed))/sd(value_transformed)) %>%
   filter(Year <= max(meta_data$max_proxy_yr))
 
 
 ## get no. of reconstruction years
-n_recon <-  data_scale %>%
-  filter(is.na(clim_scale)) %>%
-  group_by(DatasetID) %>%
-  dplyr::summarise(n = n()) %>%
-  pull(n) %>% max
+n_recon <- length(all_years) - nrow(data_calib)
 
-## bget number of proxies used
+## get number of proxies used
 n_proxys <- nrow(meta_data)
+n_id <- data_scale_filter %>% dplyr::count(DatasetID) %>% pull(n)
 
 # create jags data list
 jags_data =  list(y_i = data_scale_filter$proxy_scale,
