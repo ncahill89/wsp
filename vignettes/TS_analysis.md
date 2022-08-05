@@ -98,6 +98,8 @@ sigma^2 estimated as 0.301:  log likelihood=-104.62
 AIC=215.25   AICc=215.44   BIC=223.83
 ```
 
+![](figures/RFI_MA1res_Fitzroy.png)<!-- -->
+
 ### AR(1) model
 
 The code below will fit the AR(1) model and produce a residual analysis. If the model is adequate in capturing the information in the time series then the residuals should be uncorrelated, white noise. 
@@ -125,6 +127,8 @@ s.e.  0.0884    0.0479
 sigma^2 estimated as 0.302:  log likelihood=-104.83
 AIC=215.65   AICc=215.84   BIC=224.23
 ```
+
+![](figures/RFI_AR1res_Fitzroy.png)<!-- -->
 
 Both the MA(1) and AR(1) models have AIC values of ~215 and residual analysis suggests that either model is appropriate. 
 
@@ -156,6 +160,8 @@ sigma^2 estimated as 0.3034:  log likelihood=-104.62
 AIC=217.24   AICc=217.56   BIC=228.68
 ```
 
+![](figures/RFI_ARMAres_Fitzroy.png)<!-- -->
+
 The added complexity of the ARMA(1,1) does not appear necessary and does not improve the AIC (217). 
 
 
@@ -183,6 +189,8 @@ dat_rf %>%
   gg_tsdisplay(value, plot_type='partial') +
   ggtitle("Time Series Analysis for RFI - Brisbane")
 ```
+
+![](figures/RFI_TS_Brisbane.png)<!-- -->
 
 The ACF and PACF plots don't indicate any significant autocorrelation so we will compare two time series models for these data:
 
@@ -218,6 +226,7 @@ s.e.  0.0900    0.0008
 sigma^2 estimated as 7.048e-05:  log likelihood=434.59
 AIC=-863.18   AICc=-862.99   BIC=-854.6
 ```
+![](figures/RFI_MA1res_Brisbane.png)<!-- -->
 
 ### AR(1) model
 
@@ -246,6 +255,8 @@ s.e.  0.0894    0.0007
 sigma^2 estimated as 7.048e-05:  log likelihood=434.59
 AIC=-863.18   AICc=-862.99   BIC=-854.6
 ```
+
+![](figures/RFI_AR1res_Brisbane.png)<!-- -->
 
 Both the MA(1) and AR(1) models have AIC values of -863 and residual analysis suggests that either model is appropriate. 
 
