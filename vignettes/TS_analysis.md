@@ -81,7 +81,7 @@ report(fit1)
 fit1 %>% 
   gg_tsresiduals()
 ```
-
+```
 Series: value 
 Model: ARIMA(0,0,1) w/ mean 
 
@@ -92,7 +92,7 @@ s.e.  0.0874    0.0581
 
 sigma^2 estimated as 0.301:  log likelihood=-104.62
 AIC=215.25   AICc=215.44   BIC=223.83
-
+```
 
 ### AR(1) model
 
