@@ -45,8 +45,9 @@ run_mod <- function(id,
       saveRDS(dat, paste0("output/",id$catchment,"/",id$climate_index,"/dat.rds"))
       ggsave(paste0("output/",id$catchment,"/",id$climate_index,"/p_recon.pdf"))
 
-      converge <- ifelse(any(mod$rhat$rhat>1.15),"failed","passed")
-      cat("The model run for ",id$climate_index, " has ",converge," convergence checks",sep="",append=TRUE, file = paste0("output/",id$catchment,"/pass.txt"), fill = TRUE)
+      converge <- ifelse(any(mod$rhat$rhat>1.15),"some issues ","no issues")
+      check <- ifelse(any(mod$rhat$rhat>1.15),"Further diagnostics are advised.","")
+      cat("The model run for ",id$climate_index, " has flagged ",converge,"with convergence.",check,sep="",append=TRUE, file = paste0("output/",id$catchment,"/convergence.txt"), fill = TRUE)
 
     }
   }

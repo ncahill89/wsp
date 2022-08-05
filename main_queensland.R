@@ -16,9 +16,9 @@ catchments
   for(c in 1:4) # there are 4 climate variables
   {
     id <- get_id(catchment_num = 1,
-                climate_num = c,
+                 climate_num = c,
                  catchment_scale = FALSE)
-    run_mod(id, incl.trend = TRUE)
+    run_mod(id, include_lag = TRUE)
   }# end c loop
 
 
