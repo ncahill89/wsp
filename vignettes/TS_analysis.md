@@ -58,6 +58,8 @@ dat_rf %>%
   ggtitle("Time Series Analysis for RFI - Fitzroy")
 ```
 
+![](figures/RFI_TS_Fitzroy.png)<!-- -->
+
 Based on the plots above, which show a significant lag in the ACF and PCF plots, we will compare 3 time series models for these data:
 
 1. Moving average of order 1 - MA(1) 
