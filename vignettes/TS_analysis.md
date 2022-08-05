@@ -82,7 +82,7 @@ fit1 %>%
   gg_tsresiduals()
 ```
 
-### model output
+__model output__
 ```
 Series: value 
 Model: ARIMA(0,0,1) w/ mean 
@@ -110,7 +110,7 @@ fit2 %>%
   gg_tsresiduals()
 ```
 
-### model output
+__model output__
 ```
 Series: value 
 Model: ARIMA(1,0,0) w/ mean 
@@ -140,7 +140,7 @@ fit3 %>%
   gg_tsresiduals()
 ```
 
-### model output
+__model output__
 ```
 Series: value 
 Model: ARIMA(1,0,1) w/ mean 
@@ -203,7 +203,7 @@ fit1 %>%
   gg_tsresiduals()
 ```
 
-### model output
+__model output__
 ```
 Series: value 
 Model: ARIMA(0,0,1) w/ mean 
@@ -231,7 +231,7 @@ fit2 %>%
   gg_tsresiduals()
 ```
 
-### model output
+__model output__
 ```
 Series: value 
 Model: ARIMA(1,0,0) w/ mean 
