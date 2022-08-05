@@ -28,7 +28,25 @@ run_mod(id)
 # to run multiple catchments - example ----------------------------------
 
 ## choose the catchments names you want to run
-catchments_to_run <- c("brisbane")
+catchments_to_run <-  c("mossman",
+                        "murray",
+                        "herbert",
+                        "tully",
+                        "mulgrave_russell",
+                        "barron",
+                        "johnstone",
+                        "daintree",
+                        "logan_albert",
+                        "noosa",
+                        "maroochy",
+                        "moreton_bay_islands",
+                        "pine",
+                        "brisbane",
+                        "mary",
+                        "south_coast",
+                        "fraser_island",
+                        "fitzroy")
+
 
 ## match the catchments to run with the full list to get the correct index
 catch_index <- match(catchments_to_run,catchments)
