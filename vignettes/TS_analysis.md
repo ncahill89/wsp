@@ -108,6 +108,19 @@ fit2 %>%
   gg_tsresiduals()
 ```
 
+```
+Series: value 
+Model: ARIMA(1,0,0) w/ mean 
+
+Coefficients:
+         ar1  constant
+      0.1996    7.3330
+s.e.  0.0884    0.0479
+
+sigma^2 estimated as 0.302:  log likelihood=-104.83
+AIC=215.65   AICc=215.84   BIC=224.23
+```
+
 Both the MA(1) and AR(1) models have AIC values of ~215 and residual analysis suggests that either model is appropriate. 
 
 ### ARMA(1,1) model
@@ -122,6 +135,19 @@ report(fit3)
 
 fit3 %>% 
   gg_tsresiduals()
+```
+
+```
+Series: value 
+Model: ARIMA(1,0,1) w/ mean 
+
+Coefficients:
+          ar1     ma1  constant
+      -0.0389  0.2492    9.5171
+s.e.   0.3711  0.3547    0.0598
+
+sigma^2 estimated as 0.3034:  log likelihood=-104.62
+AIC=217.24   AICc=217.56   BIC=228.68
 ```
 
 The added complexity of the ARMA(1,1) does not appear necessary and does not improve the AIC (217). 
@@ -173,6 +199,18 @@ fit1 %>%
   gg_tsresiduals()
 ```
 
+```
+Series: value 
+Model: ARIMA(0,0,1) w/ mean 
+
+Coefficients:
+         ma1  constant
+      0.0587    1.9150
+s.e.  0.0900    0.0008
+
+sigma^2 estimated as 7.048e-05:  log likelihood=434.59
+AIC=-863.18   AICc=-862.99   BIC=-854.6
+```
 
 ### AR(1) model
 
@@ -186,6 +224,19 @@ report(fit2)
 
 fit2 %>% 
   gg_tsresiduals()
+```
+
+```
+Series: value 
+Model: ARIMA(1,0,0) w/ mean 
+
+Coefficients:
+         ar1  constant
+      0.0585    1.8030
+s.e.  0.0894    0.0007
+
+sigma^2 estimated as 7.048e-05:  log likelihood=434.59
+AIC=-863.18   AICc=-862.99   BIC=-854.6
 ```
 
 Both the MA(1) and AR(1) models have AIC values of -863 and residual analysis suggests that either model is appropriate. 
