@@ -153,10 +153,10 @@ run_jags_model <- function(dat,
   rho ~ dunif(-1,1)
   sigma ~ dt(0, 1^-2, 1)T(0,)
   tau <- pow(sigma, -2) #precision
-  sigma_x ~ dnorm(0,1^-2)T(0,)
-  tau_x <- sigma_x^-2
+  #sigma_x ~ dnorm(0,1^-2)T(0,)
+  #tau_x <- sigma_x^-2
   #sigma_x ~ dt(0, 0.5^-2, 1)T(0,)
-  #tau_x ~ dgamma(8,2)
+  tau_x ~ dgamma(8,2)
   #sigma_x <- pow(tau_x,-0.5)
  }
   "
