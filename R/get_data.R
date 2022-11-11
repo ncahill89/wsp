@@ -35,11 +35,16 @@ get_id <- function(catchment_num = 1,
   ## Get the list of proxies corresponding to the catchment, climate combo.
   if(is.null(choose_proxy))
   {
-  proxy_id <- catchment_climate_list[[catchment_num]][[climate_num]]}
-
-  if(!is.null(choose_proxy)){
-  proxy_id <- choose_proxy}
+  proxy_id <- catchment_climate_list[[catchment_num]][[climate_num]]
   lag_match <- lag_match_list[[catchment_num]][[climate_num]]
+  }
+  if(!is.null(choose_proxy)){
+  proxy_id_all <- catchment_climate_list[[catchment_num]][[climate_num]]
+  proxy_id <- proxy_id_all[match(choose_proxy,proxy_id_all)]
+  lag_match_all <- lag_match_list[[catchment_num]][[climate_num]]
+  lag_match <- lag_match_all[match(choose_proxy,proxy_id_all)]
+  }
+
 
   dir.create("output", showWarnings = FALSE)
   dir.create(paste0("output/",catchments[catchment_num]),showWarnings = F)
@@ -146,7 +151,6 @@ get_proxy_clim_data <- function(catchment,
             proxy_max_index = match(max_proxy_yr,indicator_data$Year),
             n_recon_years = ifelse((min_clim_yr - min_proxy_yr)>0,min_clim_yr - min_proxy_yr,NA)) %>%
     filter(!is.na(n_recon_years))
-
 
   meta_data$lag_match <- lag_match[match(meta_data$DatasetID,proxy_id)]
 

@@ -20,10 +20,6 @@ catchments
 
 id <- get_id(catchment_num = 8, # Brisbane
              climate_num = 3 #rainfall index
-             #,choose_proxy = Dataset_269
-             #,choose_proxy = c("Dataset_246","Dataset_269","Dataset_8","Dataset_11"),
-             ,choose_proxy = c("Dataset_269","Dataset_8","Dataset_11","Dataset_242","Dataset_246","Dataset_197")
-
              )
 
 run_mod(id)
