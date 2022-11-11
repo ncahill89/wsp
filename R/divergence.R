@@ -1,5 +1,5 @@
 library(tidyverse)
-library(FNN)
+#library(FNN)
 
 catchment_names <- readRDS("data/catchments.rds")
 climate_variable_names <- readRDS("data/climate_indices.rds")

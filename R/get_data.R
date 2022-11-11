@@ -44,7 +44,7 @@ get_id <- function(catchment_num = 1,
   dir.create("output", showWarnings = FALSE)
   dir.create(paste0("output/",catchments[catchment_num]),showWarnings = F)
 
-  cat("Output folder created for the ",id$catchment, "catchment ")
+  cat("Output folder created for the ",catchments[catchment_num], "catchment ")
 
   return(list(proxy_id = proxy_id,
               lag_match = lag_match,

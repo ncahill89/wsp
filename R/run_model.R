@@ -98,7 +98,7 @@ run_jags_model <- function(dat,
     x_hat[j] <- xrecon_j[j]
   }
 
-   x_i[1] ~ dt(xmod_i[1], tau_x,2)
+   x_i[1] ~ dnorm(xmod_i[1], tau_x)
    xmod_i[1] ~ dnorm(mux[n_recon + 1], sigma^-2)
    mux[n_recon + 1] <- rho*xrecon_j[n_recon]
    x_hat[n_recon + 1] <-  x_i[1]
@@ -106,7 +106,7 @@ run_jags_model <- function(dat,
   ### calibration period
   for(i in 2:n_calib)
   {
-    x_i[i] ~ dt(xmod_i[i], tau_x,2)
+    x_i[i] ~ dnorm(xmod_i[i], tau_x)
     xmod_i[i] ~ dnorm(mux[n_recon + i], sigma^-2)
     mux[n_recon + i] <- rho*x_i[i-1]
     x_hat[n_recon + i] <- x_i[i]
@@ -153,13 +153,13 @@ run_jags_model <- function(dat,
   rho ~ dunif(-1,1)
   sigma ~ dt(0, 1^-2, 1)T(0,)
   tau <- pow(sigma, -2) #precision
-  #sigma_x ~ dnorm(1,0.1^-2)T(0,)
+  sigma_x ~ dnorm(1,1^-2)T(0,)
+  tau_x <- sigma_x^-2
   #sigma_x ~ dt(0, 0.5^-2, 1)T(0,)
-  tau_x ~ dgamma(8,2)
-  sigma_x <- pow(tau_x,-0.5)
+  #tau_x ~ dgamma(8,2)
+  #sigma_x <- pow(tau_x,-0.5)
  }
   "
-
   ar1_trend_model="
   model
   {
